@@ -14,7 +14,245 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      assessments: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          description: string | null
+          id: string
+          max_score: number | null
+          score: number | null
+          skills_assessed: string[] | null
+          status: Database["public"]["Enums"]["assessment_status"] | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          max_score?: number | null
+          score?: number | null
+          skills_assessed?: string[] | null
+          status?: Database["public"]["Enums"]["assessment_status"] | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          max_score?: number | null
+          score?: number | null
+          skills_assessed?: string[] | null
+          status?: Database["public"]["Enums"]["assessment_status"] | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          created_at: string
+          currency: string | null
+          description: string | null
+          difficulty_level: Database["public"]["Enums"]["skill_level"] | null
+          duration_hours: number | null
+          id: string
+          price: number | null
+          provider: string
+          rating: number | null
+          tags: string[] | null
+          title: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          difficulty_level?: Database["public"]["Enums"]["skill_level"] | null
+          duration_hours?: number | null
+          id?: string
+          price?: number | null
+          provider: string
+          rating?: number | null
+          tags?: string[] | null
+          title: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          difficulty_level?: Database["public"]["Enums"]["skill_level"] | null
+          duration_hours?: number | null
+          id?: string
+          price?: number | null
+          provider?: string
+          rating?: number | null
+          tags?: string[] | null
+          title?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
+      learning_paths: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          progress: number | null
+          recommended_courses: string[] | null
+          target_skills: string[] | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          progress?: number | null
+          recommended_courses?: string[] | null
+          target_skills?: string[] | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          progress?: number | null
+          recommended_courses?: string[] | null
+          target_skills?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          job_title: string | null
+          organization: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          job_title?: string | null
+          organization?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          job_title?: string | null
+          organization?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      skills: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          is_ai_related: boolean | null
+          name: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_ai_related?: boolean | null
+          name: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_ai_related?: boolean | null
+          name?: string
+        }
+        Relationships: []
+      }
+      user_skills: {
+        Row: {
+          created_at: string
+          current_level: Database["public"]["Enums"]["skill_level"]
+          id: string
+          last_assessed_at: string | null
+          skill_id: string
+          target_level: Database["public"]["Enums"]["skill_level"] | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_level: Database["public"]["Enums"]["skill_level"]
+          id?: string
+          last_assessed_at?: string | null
+          skill_id: string
+          target_level?: Database["public"]["Enums"]["skill_level"] | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_level?: Database["public"]["Enums"]["skill_level"]
+          id?: string
+          last_assessed_at?: string | null
+          skill_id?: string
+          target_level?: Database["public"]["Enums"]["skill_level"] | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      "User-Info": {
+        Row: {
+          created_at: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +261,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      assessment_status: "pending" | "in_progress" | "completed"
+      skill_level: "beginner" | "intermediate" | "advanced" | "expert"
+      user_role: "individual" | "hr_manager" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +390,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      assessment_status: ["pending", "in_progress", "completed"],
+      skill_level: ["beginner", "intermediate", "advanced", "expert"],
+      user_role: ["individual", "hr_manager", "admin"],
+    },
   },
 } as const
