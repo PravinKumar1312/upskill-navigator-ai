@@ -9,6 +9,11 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardLayout from "@/components/DashboardLayout";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import Assessment from "./pages/Assessment";
+import Courses from "./pages/Courses";
+import Analytics from "./pages/Analytics";
+import LearningPaths from "./pages/LearningPaths";
+import TeamManagement from "./pages/TeamManagement";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -30,6 +35,11 @@ const App = () => (
                 </ProtectedRoute>
               }>
                 <Route index element={<Index />} />
+                <Route path="assessment" element={<Assessment />} />
+                <Route path="courses" element={<Courses />} />
+                <Route path="analytics" element={<Analytics />} />
+                <Route path="learning-paths" element={<LearningPaths />} />
+                <Route path="team" element={<TeamManagement />} />
                 <Route path="settings" element={<Settings />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               </Route>

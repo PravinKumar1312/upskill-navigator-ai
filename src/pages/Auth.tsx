@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Brain, Target, Users } from 'lucide-react';
+import { Loader2, Brain, Target, Users, Github } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +17,7 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [role, setRole] = useState('individual');
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, signUp, signInWithOAuth, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -70,9 +71,23 @@ const Auth = () => {
     setIsLoading(false);
   };
 
+  const handleOAuthSignIn = async (provider: 'github' | 'facebook') => {
+    setIsLoading(true);
+    const { error } = await signInWithOAuth(provider);
+    
+    if (error) {
+      toast({
+        title: "OAuth Sign In Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+    setIsLoading(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-lg">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <div className="bg-primary text-primary-foreground p-3 rounded-full">
@@ -100,98 +115,162 @@ const Auth = () => {
               </TabsList>
 
               <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
-                    <Input
-                      id="signin-email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleOAuthSignIn('github')}
+                      disabled={isLoading}
+                      className="w-full"
+                    >
+                      <Github className="mr-2 h-4 w-4" />
+                      GitHub
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleOAuthSignIn('facebook')}
+                      disabled={isLoading}
+                      className="w-full"
+                    >
+                      <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      </svg>
+                      Facebook
+                    </Button>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
-                    <Input
-                      id="signin-password"
-                      type="password"
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
+
+                  <div className="relative">
+                    <Separator />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="bg-background px-2 text-muted-foreground text-sm">or</span>
+                    </div>
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Sign In
-                  </Button>
-                </form>
+
+                  <form onSubmit={handleSignIn} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-email">Email</Label>
+                      <Input
+                        id="signin-email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-password">Password</Label>
+                      <Input
+                        id="signin-password"
+                        type="password"
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Sign In
+                    </Button>
+                  </form>
+                </div>
               </TabsContent>
 
               <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      placeholder="Enter your full name"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      required
-                    />
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleOAuthSignIn('github')}
+                      disabled={isLoading}
+                      className="w-full"
+                    >
+                      <Github className="mr-2 h-4 w-4" />
+                      GitHub
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleOAuthSignIn('facebook')}
+                      disabled={isLoading}
+                      className="w-full"
+                    >
+                      <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      </svg>
+                      Facebook
+                    </Button>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
+
+                  <div className="relative">
+                    <Separator />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="bg-background px-2 text-muted-foreground text-sm">or</span>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      placeholder="Create a password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="role">Role</Label>
-                    <Select value={role} onValueChange={setRole}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="individual">
-                          <div className="flex items-center">
-                            <Target className="mr-2 h-4 w-4" />
-                            Individual Professional
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="hr_manager">
-                          <div className="flex items-center">
-                            <Users className="mr-2 h-4 w-4" />
-                            HR Manager
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Create Account
-                  </Button>
-                </form>
+
+                  <form onSubmit={handleSignUp} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-name">Full Name</Label>
+                      <Input
+                        id="signup-name"
+                        type="text"
+                        placeholder="Enter your full name"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email">Email</Label>
+                      <Input
+                        id="signup-email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password">Password</Label>
+                      <Input
+                        id="signup-password"
+                        type="password"
+                        placeholder="Create a password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="role">Role</Label>
+                      <Select value={role} onValueChange={setRole}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="individual">
+                            <div className="flex items-center">
+                              <Target className="mr-2 h-4 w-4" />
+                              Individual Professional
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="hr_manager">
+                            <div className="flex items-center">
+                              <Users className="mr-2 h-4 w-4" />
+                              HR Manager
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Create Account
+                    </Button>
+                  </form>
+                </div>
               </TabsContent>
             </Tabs>
           </CardContent>
