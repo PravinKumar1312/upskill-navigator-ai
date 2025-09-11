@@ -30,7 +30,6 @@ import {
 
 interface Profile {
   full_name: string | null;
-  role: string;
   avatar_url: string | null;
 }
 
@@ -48,9 +47,9 @@ const DashboardLayout = () => {
   const fetchProfile = async () => {
     const { data } = await supabase
       .from('profiles')
-      .select('full_name, role, avatar_url')
+      .select('full_name, avatar_url')
       .eq('user_id', user?.id)
-      .single();
+      .maybeSingle();
     
     if (data) {
       setProfile(data);
@@ -68,10 +67,7 @@ const DashboardLayout = () => {
     { icon: BookOpen, label: 'Courses', href: '/courses' },
     { icon: BarChart3, label: 'Analytics', href: '/analytics' },
     { icon: FileText, label: 'Learning Paths', href: '/learning-paths' },
-    ...(profile?.role === 'hr_manager' || profile?.role === 'admin' 
-      ? [{ icon: Users, label: 'Team Management', href: '/team' }] 
-      : []
-    ),
+    { icon: Users, label: 'Team Management', href: '/team' },
     { icon: Settings, label: 'Settings', href: '/settings' },
   ];
 
@@ -116,7 +112,7 @@ const DashboardLayout = () => {
                   </Avatar>
                   <div className="flex flex-col items-start">
                     <span className="text-sm font-medium">{profile?.full_name || user?.email}</span>
-                    <span className="text-xs text-muted-foreground capitalize">{profile?.role}</span>
+                    <span className="text-xs text-muted-foreground">User</span>
                   </div>
                 </Button>
               </DropdownMenuTrigger>
